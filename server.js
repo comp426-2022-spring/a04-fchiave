@@ -120,14 +120,22 @@ if (row === undefined) {
     console.log('Your database appears to be empty. I will initialize it now.');
 // Set a const that will contain your SQL commands to initialize the database.
     const sqlInit = `
-        CREATE TABLE logdata ( remoteaddr INTEGER PRIMARY KEY, remoteuser TEXT, time TEXT, method TEXT, url TEXT, protocol TEXT, httpversion TEXT, secure TEXT, status INTEGER PRIMARY KEY, referer TEXT, useragent TEXT );
+        CREATE TABLE logdata ( remoteaddr INTEGER PRIMARY KEY, remoteuser TEXT, time TEXT, method TEXT, url TEXT, protocol TEXT, httpversion TEXT, secure TEXT, status TEXT, referer TEXT, useragent TEXT );
     `;
+    // Execute SQL commands that we just wrote above.
+    db.exec(sqlInit);
+// Echo information about what we just did to the console.
+    console.log('Your database has been initialized with a new table.');
+} else {
+// Since the database already exists, echo that to the console.
+    console.log('Database exists.')
 }
 
 
 
+
 // to add later
-let logdata = {
+`let logdata = {
     remoteaddr: request.ip,
     remoteuser: request.user,
     time: Date.now(),
@@ -139,4 +147,4 @@ let logdata = {
     status: result.statusCode,
     referer: request.headers['referer'],
     useragent: request.headers['user-agent']
-    }
+    }`
