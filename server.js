@@ -42,6 +42,7 @@ const server = app.listen(port, () => {
 });
 
 if (args.debug == 'true') {
+    console.log("debug!")
     app.get('/app/log/access', (req, res) => {
         try {
             const stmt = db.prepare('SELECT * FROM accesslog').all()
@@ -121,17 +122,17 @@ app.get('/app/flip/call/:call', (req, res) => {
 app.use( (req, res, next) => {
     // Your middleware goes here.
     let logdata = {
-        remoteaddr: String(req.ip),
-        remoteuser: String(req.user) || null,
-        time: String(Date.now()),
-        method: String(req.method),
-        url: String(req.url),
-        protocol: String(req.protocol),
-        httpversion: String(req.httpVersion),
-        secure: String(req.secure),
-        status: String(res.statusCode),
-        referer: String(req.headers['referer']) || null,
-        useragent: String(req.headers['user-agent'])
+        remoteaddr: req.ip,
+        remoteuser: req.user,
+        time: Date.now(),
+        method: req.method,
+        url: req.url,
+        protocol: req.protocol,
+        httpversion: req.httpVersion,
+        secure: req.secure,
+        status: res.statusCode,
+        referer: req.headers['referer'],
+        useragent: req.headers['user-agent']
     }
     console.log(logdata.remoteaddr, '\n', logdata.remoteuser, '\n', logdata.time, '\n', logdata.method, '\n', logdata.url, '\n', logdata.protocol, '\n', logdata.httpversion, '\n', logdata.secure, '\n', logdata.status, '\n', logdata.referer, '\n', logdata.useragent)
     const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
