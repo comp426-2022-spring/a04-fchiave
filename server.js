@@ -1,6 +1,8 @@
 // Import minimist to help get command line args
 import minimist from 'minimist';
 const args = minimist(process.argv.slice(2))
+
+//if --help option is included, don't init anything, return help msg and exit
 if (args.help == true) {
     console.log(`server.js [options]
 
