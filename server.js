@@ -42,7 +42,6 @@ const server = app.listen(port, () => {
 });
 
 if (args.debug == 'true') {
-    console.log("debug!")
     app.get('/app/log/access', (req, res) => {
         try {
             const stmt = db.prepare('SELECT * FROM accesslog').all()
