@@ -41,6 +41,16 @@ const server = app.listen(port, () => {
     console.log('App listening on port %PORT%'.replace('%PORT%',port))
 });
 
+if (args.debug == true) {
+    app.get('/app/log/access', (req, res) => {
+        try {
+            const stmt = db.prepare('SELECT * FROM accesslog').all()
+            res.status(200).json(stmt)
+        } catch {
+            console.error(e)
+        }
+    });
+}
 app.get('/app/', (req, res) => {
     // Respond with status 200
         res.statusCode = 200;
