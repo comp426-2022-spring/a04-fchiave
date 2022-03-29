@@ -50,7 +50,12 @@ if (args.debug == true) {
             console.error(e)
         }
     });
+
+    app.get('/app/error', (req, res) => {
+        throw new Error('Error test successful.') // Express will catch this on its own.
+    });
 }
+`
 app.get('/app/', (req, res) => {
     // Respond with status 200
         res.statusCode = 200;
@@ -111,7 +116,7 @@ app.get('/app/flip/call/:call', (req, res) => {
 	const flip = flipACoin(req.params.call)
     res.end("{\"call\":\"" + flip.call + "\",\"flip\":\"" + flip.flip + "\",\"result\":\"" + flip.result + "\"}")
 });
-
+`
 // middleware to insert new record into database
 app.use( (req, res, next) => {
     // Your middleware goes here.
