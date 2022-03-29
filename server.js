@@ -1,8 +1,7 @@
 // Import minimist to help get command line args
 import minimist from 'minimist';
 const args = minimist(process.argv.slice(2))
-console.log(args)
-if (true) {
+if (args.help == true) {
     console.log(`server.js [options]
 
     --port	Set the port number for the server to listen on. Must be an integer
@@ -26,8 +25,12 @@ if (true) {
 import express from 'express'
 const app = express()
 
+// Require better-sqlite.
+import bettersqlite3 from 'better-sqlite3'
+const Database = bettersqlite3();
+
 // Set port to arg or default to 5000
-const port = args.port || process.env.PORT || 5000
+const port = args.port || process.env.PORT || 5555
 
 // Start an app server
 const server = app.listen(port, () => {

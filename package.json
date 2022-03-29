@@ -4,7 +4,7 @@
   "description": "Databases, logs, errors, and middleware",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js --help"
+    "test": "node server.js"
   },
   "repository": {
     "type": "git",
