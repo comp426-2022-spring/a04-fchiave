@@ -27,9 +27,11 @@ if (args.help == true) {
 // Require Express.js
 import express from 'express'
 const app = express()
+app.use(express.json());
+
 
 // Require database.js
-import db from './modules/database.js';
+import db from './database.js';
 
 // Set port to arg or default to 5000
 const port = args.port || process.env.PORT || 5555
@@ -100,6 +102,28 @@ app.get('/app/flip/call/:call', (req, res) => {
     res.end("{\"call\":\"" + flip.call + "\",\"flip\":\"" + flip.flip + "\",\"result\":\"" + flip.result + "\"}")
 });
 
+// middleware to insert new record into database
+app.use( (req, res, next) => {
+    // Your middleware goes here.
+    let logdata = {
+        remoteaddr: request.ip,
+        remoteuser: request.user,
+        time: Date.now(),
+        method: request.method,
+        url: request.url,
+        protocol: request.protocol,
+        httpversion: request.httpVersion,
+        secure: request.secure,
+        status: result.statusCode,
+        referer: request.headers['referer'],
+        useragent: request.headers['user-agent']
+    }
+    const stmt = db.prepare('INSERT INTO log (remoteaddr, remoteuser, time, method, url, protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent)
+    res.status(200).json(stmt)
+    })
+    
+
 // Default response for any other request
 app.use(function(req, res){
     res.status(404).send('404 NOT FOUND')
@@ -110,17 +134,3 @@ app.use(function(req, res){
 
 
 
-// to add later
-`let logdata = {
-    remoteaddr: request.ip,
-    remoteuser: request.user,
-    time: Date.now(),
-    method: request.method,
-    url: request.url,
-    protocol: request.protocol,
-    httpversion: request.httpVersion,
-    secure: request.secure,
-    status: result.statusCode,
-    referer: request.headers['referer'],
-    useragent: request.headers['user-agent']
-    }`
