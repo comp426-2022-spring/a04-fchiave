@@ -4,12 +4,13 @@
   "description": "Databases, logs, errors, and middleware",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js --port=5555"
+    "test": "node server.js --help"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/comp426-2022-spring/a04-fchiave.git"
   },
+  "type": "module",
   "author": "Felipe Chiavegatto",
   "license": "GPL-3.0-only",
   "bugs": {
