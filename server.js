@@ -41,6 +41,29 @@ const server = app.listen(port, () => {
     console.log('App listening on port %PORT%'.replace('%PORT%',port))
 });
 
+// middleware to insert new record into database
+app.use( (req, res, next) => {
+    // Your middleware goes here.
+    let logdata = {
+        remoteaddr: req.ip,
+        remoteuser: req.user,
+        time: Date.now(),
+        method: req.method,
+        url: req.url,
+        protocol: req.protocol,
+        httpversion: req.httpVersion,
+        status: res.statusCode,
+        referer: req.headers['referer'],
+        useragent: req.headers['user-agent']
+    }
+    console.log(logdata.remoteaddr, '\n', logdata.remoteuser, '\n', logdata.time, '\n', logdata.method, '\n', logdata.url, '\n', logdata.protocol, '\n', logdata.httpversion, '\n', logdata.secure, '\n', logdata.status, '\n', logdata.referer, '\n', logdata.useragent)
+    const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent)
+    res.status(200).json(info)
+    next()
+    })
+
+
 if (args.debug == 'true') {
     app.get('/app/log/access', (req, res) => {
         try {
@@ -55,6 +78,10 @@ if (args.debug == 'true') {
         throw new Error('Error test successful.') // Express will catch this on its own.
     });
 }
+
+
+
+
 `
 app.get('/app/', (req, res) => {
     // Respond with status 200
@@ -117,28 +144,7 @@ app.get('/app/flip/call/:call', (req, res) => {
     res.end("{\"call\":\"" + flip.call + "\",\"flip\":\"" + flip.flip + "\",\"result\":\"" + flip.result + "\"}")
 });
 `
-// middleware to insert new record into database
-app.use( (req, res, next) => {
-    // Your middleware goes here.
-    let logdata = {
-        remoteaddr: req.ip,
-        remoteuser: req.user,
-        time: Date.now(),
-        method: req.method,
-        url: req.url,
-        protocol: req.protocol,
-        httpversion: req.httpVersion,
-        secure: req.secure,
-        status: res.statusCode,
-        referer: req.headers['referer'],
-        useragent: req.headers['user-agent']
-    }
-    console.log(logdata.remoteaddr, '\n', logdata.remoteuser, '\n', logdata.time, '\n', logdata.method, '\n', logdata.url, '\n', logdata.protocol, '\n', logdata.httpversion, '\n', logdata.secure, '\n', logdata.status, '\n', logdata.referer, '\n', logdata.useragent)
-    const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent)
-    res.status(200).json(info)
-    next()
-    })
+
     
 
 // Default response for any other request
