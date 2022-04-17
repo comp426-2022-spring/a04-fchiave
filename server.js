@@ -82,7 +82,7 @@ if (args.debug) {
     // add logging
     if (args.log) { 
         const WRITESTREAM = fs.createWriteStream('access.log', { flags: 'a'})
-        app.use(morgan('combined", {stream: WRITESTREAM}'))   
+        app.use(morgan('combined', {stream: WRITESTREAM}))   
     }
 }
 
