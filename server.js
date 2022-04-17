@@ -33,6 +33,12 @@ app.use(express.urlencoded({ extended: true }));
 // Require database.js
 import db from './database.js';
 
+// Require morgan
+import morgan from "morgan"
+
+// Require fs
+import fs from "fs"
+
 // Set port to arg or default to 5000
 const port = args.port || process.env.PORT || 5555
 
@@ -72,6 +78,12 @@ if (args.debug) {
     app.get('/app/error', (req, res) => {
         throw new Error('Error test successful.') // Express will catch this on its own.
     });
+
+    // add logging
+    if (args.log) { 
+        const WRITESTREAM = fs.createWriteStream('access.log', { flags: 'a'})
+        app.use(morgan('combined", {stream: WRITESTREAM}'))   
+    }
 }
 
 
